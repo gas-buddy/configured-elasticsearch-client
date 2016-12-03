@@ -25,4 +25,8 @@ export default class Logger {
   trace(/* httpMethod, requestUrl, requestBody, responseBody, responseStatus */) {
     // No action yet
   }
+
+  close() {
+    this.logger.debug('elastic: close logger');
+  }
 }
