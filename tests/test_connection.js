@@ -8,7 +8,7 @@ tap.test('test_connection', async (t) => {
     hostname: process.env.ELASTIC_HOST || 'elastic',
   };
   const elastic = new Elastic(winston, config);
-  await elastic.start();
+  await elastic.start({});
   t.ok(elastic, 'Should have a connect method');
   await elastic.stop();
 });

@@ -6,19 +6,22 @@ export default class Logger {
   }
 
   error(error) {
-    this.logger.error(error.message);
+    this.logger.error(`elastic: ${error.message}`, error);
   }
 
-  warning(...messages) {
-    this.logger.warn(`elastic: ${messages.join(' ')}`);
+  warning(message, meta) {
+    this.logger.warn(`elastic: ${message}`, meta);
   }
 
-  info(...messages) {
-    this.logger.info(`elastic: ${messages.join(' ')}`);
+  info(message, meta) {
+    this.logger.info(`elastic: ${message}`, meta);
   }
 
-  debug(...messages) {
-    this.logger.debug(`elastic: ${messages.join(' ')}`);
+  debug(message, meta) {
+    // Squelch the logs we will already do
+    if (message !== 'starting request' && message !== 'Request complete') {
+      this.logger.debug(`elastic: ${message}`, meta);
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
