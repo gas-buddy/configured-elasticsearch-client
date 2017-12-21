@@ -9,7 +9,7 @@
     "cover": "cross-env BABEL_ENV=test nyc tap tests/test_*.js && nyc check-coverage $npm_package_config_coverage",
     "lint": "eslint .",
     "build": "babel src --out-dir build",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
