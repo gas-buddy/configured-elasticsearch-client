@@ -1,6 +1,6 @@
 {
   "name": "@gasbuddy/configured-elasticsearch-client",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A configuration driven elasticsearch client",
   "main": "build/index.js",
   "scripts": {
