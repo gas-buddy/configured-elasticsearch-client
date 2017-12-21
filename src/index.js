@@ -8,7 +8,7 @@ export default class ConfiguredElasticClient extends EventEmitter {
   constructor(context, opts) {
     super();
     assert(opts, 'configured-elasticsearch-client must be passed arguments');
-    assert(opts.hostname, 'configured-elasticsearch-client missing hostname setting');
+    assert(opts.hostname || opts.hosts, 'configured-elasticsearch-client missing hostname setting or hosts array');
 
     this.logger = context.logger;
 
@@ -25,8 +25,12 @@ export default class ConfiguredElasticClient extends EventEmitter {
       config.host = `${config.host}:${config.port}`;
       delete config.port;
     }
-
-    this.host = config.host;
+    if (config.host) {
+      this.host = config.host;
+    } else if (config.hosts) {
+      this.host = config.hosts[0];
+    }
+    
     this.elastic = new es.Client(config);
 
     // You should call this right before making a query,
