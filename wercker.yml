@@ -10,6 +10,12 @@ build:
     - script:
       name: lint
       code: npm run lint
+
+    - script:
+      name: Setup elasticsearch
+      code: |
+        export ELASTIC_HOST=$ELASTICSEARCH_PORT_9200_TCP_ADDR:$ELASTICSEARCH_PORT_9200_TCP_PORT
+        export ELASTIC_URL=http://$ELASTICHOST
     
     - npm-test
 
