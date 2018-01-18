@@ -42,10 +42,10 @@ export default function getApiProxy(client, req, operationName) {
               operationName: operationName || name,
             };
             client.emit('start', callInfo);
-            log(req, client, 'info', 'elasticsearch start', logInfo);
+            log(req, client, 'debug', 'elasticsearch start', logInfo);
             rz.then((resolved) => {
               callInfo.result = resolved;
-              log(req, client, 'info', 'elasticsearch complete', logInfo);
+              log(req, client, 'debug', 'elasticsearch complete', logInfo);
               client.emit('finish', callInfo);
               return resolved;
             }).catch((error) => {

@@ -1,7 +1,7 @@
-box: node
+box: node:8
 
 services:
-  - postgres:9.5-alpine
+  - elasticsearch:5.2.1
 
 build:
   steps:
@@ -12,13 +12,11 @@ build:
       code: npm run lint
 
     - script:
-      name: environment vars
+      name: Setup elasticsearch
       code: |
-        export PGHOST=$POSTGRES_PORT_5432_TCP_ADDR
-        export PGPORT=$POSTGRES_PORT_5432_TCP_PORT
-        export PGUSER=postgres
-        export PGPASSWORD=postgres
-
+        export ELASTIC_HOST=$ELASTICSEARCH_PORT_9200_TCP_ADDR:$ELASTICSEARCH_PORT_9200_TCP_PORT
+        export ELASTIC_URL=http://$ELASTICHOST
+    
     - npm-test
 
     - script:
