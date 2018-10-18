@@ -1,11 +1,11 @@
 {
   "name": "@gasbuddy/configured-elasticsearch-client",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "A configuration driven elasticsearch client",
   "main": "build/index.js",
   "scripts": {
-    "test": "tap --node-arg=-r --node-arg=babel-register tests/*.js",
-    "test-some": "tap --node-arg=-r --node-arg=babel-register",
+    "test": "tap --node-arg=-r --node-arg=@babel/register tests/*.js",
+    "test-some": "tap --node-arg=-r --node-arg=@babel/register",
     "cover": "cross-env BABEL_ENV=test nyc tap tests/test_*.js && nyc check-coverage $npm_package_config_coverage",
     "lint": "eslint .",
     "build": "babel src --out-dir build",
@@ -22,17 +22,15 @@
   "author": "GasBuddy",
   "license": "UNLICENSED",
   "devDependencies": {
-    "babel-cli": "^6.4.5",
-    "babel-preset-gasbuddy": "^1",
-    "bluebird": "^3.2.1",
-    "cross-env": "^3.1.4",
-    "eslint": "^3.1.0",
-    "eslint-config-gasbuddy": "^1",
-    "tap": "^10.0.0"
+    "@babel/cli": "^7.1.2",
+    "@babel/register": "^7.0.0",
+    "babel-preset-gasbuddy": "^4.1.0",
+    "cross-env": "^5.2.0",
+    "eslint-config-gasbuddy": "^5.0.2",
+    "tap": "^12.0.1"
   },
   "dependencies": {
-    "elasticsearch": "^12.1.0",
-    "winston": "^2.3.0"
+    "elasticsearch": "^15.1.1"
   },
   "config": {
     "coverage": "--lines=70 --statements=70 --functions=60 --branches=40"
@@ -42,7 +40,7 @@
       "src"
     ],
     "require": [
-      "babel-register"
+      "@babel/register"
     ],
     "sourceMap": false,
     "instrument": false,

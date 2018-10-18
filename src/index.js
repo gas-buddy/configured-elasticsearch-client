@@ -2,7 +2,7 @@ import assert from 'assert';
 import es from 'elasticsearch';
 import { EventEmitter } from 'events';
 import ElasticLogger from './ElasticLogger';
-import apiProxy from './apiProxy';
+import { getApiProxy, ESPROP } from './apiProxy';
 
 export default class ConfiguredElasticClient extends EventEmitter {
   constructor(context, opts) {
@@ -11,9 +11,14 @@ export default class ConfiguredElasticClient extends EventEmitter {
     assert(opts.hostname || opts.hosts, 'configured-elasticsearch-client missing hostname setting or hosts array');
 
     this.logger = context.logger;
+    this.service = context.service;
 
     const config = Object.assign({}, opts, {
-      log: ElasticLogger,
+      log: function logger() {
+        const baseLogger = new ElasticLogger(context.logger);
+        Object.assign(this, baseLogger);
+        Object.setPrototypeOf(this, Object.getPrototypeOf(baseLogger));
+      },
     });
 
     // Make ES configs look more like ours to avoid pain.
@@ -28,15 +33,28 @@ export default class ConfiguredElasticClient extends EventEmitter {
     if (config.host) {
       this.host = config.host;
     } else if (config.hosts) {
-      this.host = config.hosts[0];
+      ([this.host] = config.hosts);
     }
-    
-    this.elastic = new es.Client(config);
 
-    // You should call this right before making a query,
-    // and then we will fire start/finish/error on outbound requests
-    this.elastic.queryWithContext = (req, operationName) => apiProxy(this, req, operationName);
-    this.contextServiceProperty = opts.contextServiceProperty || 'gb';
+    if (!config.apiVersion) {
+      // Default to our current version
+      config.apiVersion = '5.6';
+    }
+
+    this[ESPROP] = new es.Client(config);
+  }
+
+  // You should call this right before making a query,
+  // and then we will fire start/finish/error on outbound requests
+  queryWithContext(req, operationName) {
+    return getApiProxy(this, req, operationName);
+  }
+
+  get elastic() {
+    if (['development', 'test'].includes(process.env.NODE_ENV || 'development')) {
+      assert(false, '*** DO NOT ACCESS elastic search client directly - call queryWithContext');
+    }
+    return this[ESPROP];
   }
 
   async start(context) {
@@ -44,16 +62,14 @@ export default class ConfiguredElasticClient extends EventEmitter {
     this.started = true;
     try {
       await this.elastic.queryWithContext(context).ping({});
-      if (context && context.logger && context.logger.info) {
-        context.logger.info(`Connected to elasticsearch ${this.host}`);
-      }
+      this.logger.info('Connected to elasticsearch', { host: this.host });
     } catch (esError) {
-      if (context && context.logger && context.logger.error) {
-        // eslint-disable-next-line max-len
-        context.logger.error(`Elasticsearch connection '${this.host}' failed to ping, continuing without verified ES connection`, esError);
-      }
+      this.logger.error('Elasticsearch failed to ping, continuing without verified ES connection', {
+        host: this.host,
+        ...this.service.wrapError(esError),
+      });
     }
-    return apiProxy(this);
+    return this;
   }
 
   stop() {

@@ -1,13 +1,9 @@
-import winston from 'winston';
+export const ESPROP = Symbol('ES Client Property');
 
 function log(req, client, level, message, meta) {
-  const gb = client.contextServiceProperty;
-  if (req && req[gb] && req[gb].logger) {
-    req[gb].logger[level](message, meta);
-  } else if (client && client.logger && client.logger[level]) {
+  const logger = req?.gb?.logger || client?.logger;
+  if (logger) {
     client.logger[level](message, meta);
-  } else {
-    winston[level](message, meta);
   }
 }
 
@@ -16,7 +12,7 @@ function log(req, client, level, message, meta) {
  * and log. The elasticsearch module goes through what seems like great effort to make it almost
  * impossible to do proper logging or metrics management.
  */
-export default function getApiProxy(client, req, operationName) {
+export function getApiProxy(client, req, operationName) {
   const callInfo = {
     client,
     context: req,
@@ -49,7 +45,8 @@ export default function getApiProxy(client, req, operationName) {
               client.emit('finish', callInfo);
               return resolved;
             }).catch((error) => {
-              callInfo.error = logInfo.error = error;
+              callInfo.error = error;
+              logInfo.error = error;
               log(req, client, 'error', 'elasticsearch failed', logInfo);
               client.emit('error', callInfo);
               throw error;

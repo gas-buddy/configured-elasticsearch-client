@@ -1,8 +1,6 @@
-import winston from 'winston';
-
 export default class Logger {
-  constructor() {
-    this.logger = winston;
+  constructor(logger) {
+    this.logger = logger;
   }
 
   error(error) {
