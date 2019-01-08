@@ -19,7 +19,7 @@ export function getApiProxy(client, req, operationName) {
     operationName,
   };
 
-  return new Proxy(client.elastic, {
+  return new Proxy(client[ESPROP], {
     get(target, name) {
       const exFn = target[name];
       if (typeof exFn === 'function') {
