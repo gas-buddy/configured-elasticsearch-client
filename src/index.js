@@ -61,7 +61,7 @@ export default class ConfiguredElasticClient extends EventEmitter {
     assert(!this.started, 'start called multiple times on configured-elasticsearch-client instance');
     this.started = true;
     try {
-      await this.elastic.queryWithContext(context).ping({});
+      await this[ESPROP].queryWithContext(context).ping({});
       this.logger.info('Connected to elasticsearch', { host: this.host });
     } catch (esError) {
       this.logger.error('Elasticsearch failed to ping, continuing without verified ES connection', {
