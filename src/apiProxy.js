@@ -43,13 +43,11 @@ export function getApiProxy(client, req, operationName) {
               callInfo.result = resolved;
               log(req, client, 'debug', 'elasticsearch complete', logInfo);
               client.emit('finish', callInfo);
-              return resolved;
             }).catch((error) => {
               callInfo.error = error;
               logInfo.error = error;
               log(req, client, 'error', 'elasticsearch failed', logInfo);
               client.emit('error', callInfo);
-              throw error;
             });
           }
 
