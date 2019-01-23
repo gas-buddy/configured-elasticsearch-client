@@ -1,7 +1,7 @@
 box: node:8
 
 services:
-  - elasticsearch:5.2.1
+  - elasticsearch:5.6
 
 build:
   steps:
@@ -15,7 +15,7 @@ build:
       name: Setup elasticsearch
       code: |
         export ELASTIC_HOST=$ELASTICSEARCH_PORT_9200_TCP_ADDR:$ELASTICSEARCH_PORT_9200_TCP_PORT
-        export ELASTIC_URL=http://$ELASTICHOST
+        export ELASTIC_URL=http://$ELASTIC_HOST
     
     - npm-test
 
