@@ -2,8 +2,13 @@ export const ESPROP = Symbol('ES Client Property');
 
 function log(req, client, level, message, meta) {
   const logger = req?.gb?.logger || client?.logger;
+
+  if (req?.headers?.correlationid) {
+    meta.c = req.headers.correlationid;
+  }
+
   if (logger) {
-    client.logger[level](message, meta);
+    logger[level](message, meta);
   }
 }
 
