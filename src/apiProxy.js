@@ -51,7 +51,7 @@ export function getApiProxy(client, req, operationName) {
             }).catch((error) => {
               callInfo.error = error;
               logInfo.error = error;
-              log(req, client, 'error', 'elasticsearch failed', logInfo);
+              log(req, client, 'error', `elasticsearch failed: args=${JSON.stringify(args)}`, logInfo);
               client.emit('error', callInfo);
             });
           }
