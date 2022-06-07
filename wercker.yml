@@ -1,7 +1,7 @@
 box: node:12
 
 services:
-  - elasticsearch:8.0
+  - elasticsearch:8.2.2
 
 build:
   steps:
