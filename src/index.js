@@ -13,13 +13,14 @@ export default class ConfiguredElasticClient extends EventEmitter {
     this.logger = context.logger;
     this.service = context.service;
 
-    const config = Object.assign({}, opts, {
+    const config = {
+      ...opts,
       log: function logger() {
         const baseLogger = new ElasticLogger(context.logger);
         Object.assign(this, baseLogger);
         Object.setPrototypeOf(this, Object.getPrototypeOf(baseLogger));
       },
-    });
+    };
 
     // Make ES configs look more like ours to avoid pain.
     if (config.hostname) {
