@@ -52,7 +52,9 @@ export function getApiProxy(client, req, operationName) {
               callInfo.error = error;
               logInfo.error = error;
               log(req, client, 'error', 'elasticsearch failed', logInfo);
-              client.emit('error', callInfo);
+              if (client.listenerCount('error')) {
+                client.emit('error', callInfo);
+              }
             });
           }
 
