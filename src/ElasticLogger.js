@@ -4,7 +4,7 @@ export default class Logger {
   }
 
   error(error) {
-    this.logger.error(`elastic: ${error.message}`, error);
+    this.logger.error('elastic: error received', { message: error?.message, stack: error?.stack });
   }
 
   warning(message, meta) {
